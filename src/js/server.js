@@ -173,6 +173,14 @@ wsServer.on('request', function(request){
 			connectionType = "panel";
 		}
 
+		else if(secret === "secret-admin-panel-key"){
+			//console.log('Valid Admin Panel Request' + "\n");
+			connection = request.accept('echo-protocol', request.origin);
+			panelIndex = panelClients.push(connection) - 1;
+			updateNewClient(panelIndex);
+			connectionType = "panel";
+		}
+
 		else{
 
 			console.log(new Date() + ' Error: invalid connection request.' + "\n");

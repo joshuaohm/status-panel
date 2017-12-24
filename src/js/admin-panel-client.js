@@ -38,6 +38,11 @@
 				comStatus.classList.remove('on');
 				comStatus.classList.add('off');
 			}
+			else if(state.status === "error"){
+				document.getElementById('comStatus').innerHTML = "ERROR CONNECTING";
+				comStatus.classList.remove('on');
+				comStatus.classList.remove('off');
+			}
 
 		}
 
@@ -58,6 +63,9 @@
 
 		connection.onerror = function(error){
 			console.log(error);
+
+			var state = { message : "none", status : "error" };
+			updatePanel(state);
 		}
 
 		connection.onmessage = function(message){
