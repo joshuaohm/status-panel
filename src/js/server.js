@@ -13,14 +13,28 @@
 */
 
 process.title = 'status-panel-server';
-var webSocketServerPort = 1450;
-var webSocketServer = require('websocket').server;
-var http = require('http');
 
-//This should match comStatus-client.js's timeInterval variable;
+//----------Server/App Config Variables----------//
+
+var webSocketServerPort = 1450;
+
+
+//Change these keys
+var panelKey = "secret-panel-key";
+var comStatusKey = "secret-comStatus-key";
+var adminPanelKey = "secret-admin-panel-key";
+
+
+
+//This should match comStatus-client.js's timeInterval variable, panel-client intervals technically can be whatever;
 var timeInterval = 6000;
 var intervalThreshold = timeInterval / 2;
 
+
+//---------------------------------------------------//
+
+var webSocketServer = require('websocket').server;
+var http = require('http');
 var panelClients = [ ];
 var comStatusClients = [ ];
 var connection, connectionType, comIndex, panelIndex;
@@ -151,7 +165,7 @@ wsServer.on('request', function(request){
 
 	function validateConnection(secret){
 
-		if(secret === "secret-comStatus-key"){
+		if(secret === comStatusKey){
 
 			if(state.comStatus.connected === "no"){
 
@@ -165,7 +179,7 @@ wsServer.on('request', function(request){
 			
 		}
 
-		else if(secret === "secret-panel-key"){
+		else if(secret === panelKey){
 			//console.log('Valid Panel Request' + "\n");
 			connection = request.accept('echo-protocol', request.origin);
 			panelIndex = panelClients.push(connection) - 1;
@@ -173,7 +187,7 @@ wsServer.on('request', function(request){
 			connectionType = "panel";
 		}
 
-		else if(secret === "secret-admin-panel-key"){
+		else if(secret === adminPanelKey){
 			//console.log('Valid Admin Panel Request' + "\n");
 			connection = request.accept('echo-protocol', request.origin);
 			panelIndex = panelClients.push(connection) - 1;

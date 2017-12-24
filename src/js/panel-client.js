@@ -10,6 +10,8 @@
 
 (function(){
 
+
+	//Change this IP/Key
 	var connectionString = "192.168.0.114:1450/secret-panel-key";
 
 	function connectToServer(){

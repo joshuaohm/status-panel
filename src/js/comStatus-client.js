@@ -21,6 +21,8 @@
 
 var WebSocketClient = require("websocket").client;
 var socket = new WebSocketClient();
+
+//Change this IP/Key
 var connectionString = "192.168.0.114:1450/secret-comStatus-key";
 
 //This should match server.js's timeInterval variable;
