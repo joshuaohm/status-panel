@@ -28,6 +28,7 @@
 	box-shadow: 0px 0px 4px 4px rgba(0,0,0,.4);
 	padding: 16px;
 	text-align: center;
+	margin-right: 32px;
 }
 
 .status-panel .item .title{
@@ -37,19 +38,19 @@
 	padding-bottom: 8px;
 }
 
-.status-panel .computer-status.off{
+.status-panel .computer-status.off, .status-panel .mobile-status.off{
 	width: 200px;
 	background-color: rgba(255,0,0,.2);
 }
 
-.status-panel .computer-status.on{
+.status-panel .computer-status.on, .status-panel .mobile-status.on{
 	width: 200px;
 	background-color: rgba(0,255,0,.2);
 	box-shadow: 0px 0px 4px 4px rgba(0,255,255,.4);
 }
 
 
-.computer-status .message{
+.computer-status .message, .mobile-status .message{
 	margin-bottom: 16px;
 	font-size: 20px;
 	font-weight: bold;

@@ -18,27 +18,60 @@
 
 		//--------Begin Client Functions----------//
 
-		function updatePanel(state){
-
-			//console.log(state);
+		function updateComStatus(state){
 
 			var comStatus = document.getElementsByClassName('computer-status')[0];
 
-			if(state.message !== "none"){
+			if(state.comStatus.message !== "none"){
 				document.getElementById('comStatusMessage').innerHTML = state.message;
 			}
-			if(state.status === "on"){
+			if(state.comStatus.status === "on"){
 
 				document.getElementById('comStatus').innerHTML = "ONLINE";				
 				comStatus.classList.remove('off');
 				comStatus.classList.add('on');
 			}
-			else if(state.status === "off"){
+			else if(state.comStatus.status === "off"){
 				document.getElementById('comStatus').innerHTML = "OFFLINE";
 				comStatus.classList.remove('on');
 				comStatus.classList.add('off');
 			}
-			else if(state.status === "error"){
+
+		}
+
+		function updateMobStatus(state){
+
+			var mobStatus = document.getElementsByClassName('mobile-status')[0];
+
+			if(state.mobStatus.message !== "none" && state.mobStatus.message !== ""){
+				document.getElementById('mobStatusMessage').innerHTML = state.mobStatus.message;
+			}
+			else{
+				document.getElementById('mobStatusMessage').innerHTML = "No Message";
+			}
+
+			if(state.mobStatus.status === "on"){
+
+				document.getElementById('mobStatus').innerHTML = "ONLINE";				
+				mobStatus.classList.remove('off');
+				mobStatus.classList.add('on');
+			}
+			else if(state.mobStatus.status === "off"){
+				document.getElementById('mobStatus').innerHTML = "OFFLINE";
+				mobStatus.classList.remove('on');
+				mobStatus.classList.add('off');
+			}
+
+		}
+
+		function updatePanel(state){
+
+			//console.log(state);
+
+			updateComStatus(state);
+			updateMobStatus(state);
+			
+			if(state.status === "error"){
 				document.getElementById('comStatus').innerHTML = "ERROR CONNECTING";
 				comStatus.classList.remove('on');
 				comStatus.classList.remove('off');

@@ -28,6 +28,8 @@ var connectionString = "192.168.0.114:1450/secret-comStatus-key";
 //This should match server.js's timeInterval variable;
 var timeInterval = 6000;
 
+var isConnected = false;
+
 socket.on('connectFailed', function(error){
 
 	console.log('Error connecting to server:');
@@ -40,9 +42,14 @@ socket.on('connect', function (connection){
 	//Endlessly sends comStatus updates based on timeInterval value
 	function loopUpdates(){
 
-		setInterval(function(){
+		var loopInterval = setInterval(function(){
 
-			sendComStatus(false);
+			if(isConnected){
+				sendComStatus(false);
+			}
+			else{
+				clearInterval(loopInterval);
+			}
 		}, timeInterval);	
 	}
 
@@ -69,8 +76,6 @@ socket.on('connect', function (connection){
 	
 	//console.log('Connected to server.');
 
-	sendComStatus(true);
-
 	connection.on('error', function(error){
 
 		console.log('Error connecting to server.');
@@ -80,14 +85,19 @@ socket.on('connect', function (connection){
 	connection.on('close', function(){
 
 		//console.log('Connection with server closed.');
+		isConnected = false;
 	});
 
 	connection.on('message', function(message){
 
 		try{
-			var msg = JSON.parse(message.data);
+			var msg = JSON.parse(message.utf8Data);
 
-			//console.log(msg);
+			if(msg.status == "connected"){
+
+				isConnected = true;
+				sendComStatus(true);
+			}
 		}
 		catch (e){
 			console.log('Failed to parse message from server:');
