@@ -20,7 +20,7 @@
 
 		function updateComStatus(state){
 
-			var comStatus = document.getElementsByClassName('computer-status')[0];
+			var com = document.getElementsByClassName('computer-status')[0];
 
 			if(state.comStatus.message !== "none"){
 				document.getElementById('comStatusMessage').innerHTML = state.message;
@@ -28,20 +28,20 @@
 			if(state.comStatus.status === "on"){
 
 				document.getElementById('comStatus').innerHTML = "ONLINE";				
-				comStatus.classList.remove('off');
-				comStatus.classList.add('on');
+				com.classList.remove('off');
+				com.classList.add('on');
 			}
 			else if(state.comStatus.status === "off"){
 				document.getElementById('comStatus').innerHTML = "OFFLINE";
-				comStatus.classList.remove('on');
-				comStatus.classList.add('off');
+				com.classList.remove('on');
+				com.classList.add('off');
 			}
 
 		}
 
 		function updateMobStatus(state){
 
-			var mobStatus = document.getElementsByClassName('mobile-status')[0];
+			var mob = document.getElementsByClassName('mobile-status')[0];
 
 			if(state.mobStatus.message !== "none" && state.mobStatus.message !== ""){
 				document.getElementById('mobStatusMessage').innerHTML = state.mobStatus.message;
@@ -53,20 +53,25 @@
 			if(state.mobStatus.status === "on"){
 
 				document.getElementById('mobStatus').innerHTML = "ONLINE";				
-				mobStatus.classList.remove('off');
-				mobStatus.classList.add('on');
+				mob.classList.remove('off');
+				mob.classList.add('on');
 			}
 			else if(state.mobStatus.status === "off"){
 				document.getElementById('mobStatus').innerHTML = "OFFLINE";
-				mobStatus.classList.remove('on');
-				mobStatus.classList.add('off');
+				mob.classList.remove('on');
+				mob.classList.add('off');
+			}
+
+			if(state.mobStatus.battery !== 0 && state.mobStatus.battery){
+
+				document.getElementById('mobStatus').innerHTML = state.mobStatus.battery + "%";
 			}
 
 		}
 
 		function updatePanel(state){
 
-			//console.log(state);
+			console.log(state);
 
 			updateComStatus(state);
 			updateMobStatus(state);

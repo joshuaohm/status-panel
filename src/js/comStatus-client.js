@@ -26,7 +26,7 @@ var socket = new WebSocketClient();
 var connectionString = "192.168.0.114:1450/secret-comStatus-key";
 
 //This should match server.js's timeInterval variable;
-var timeInterval = 6000;
+var timeInterval = 600000;
 
 var isConnected = false;
 

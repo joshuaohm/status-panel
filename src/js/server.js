@@ -28,7 +28,7 @@ var androidKey = "secret-android-key";
 
 
 //This should match comStatus-client.js's timeInterval variable, panel-client intervals technically can be whatever;
-var timeInterval = 6000;
+var timeInterval = 600000;
 var intervalThreshold = timeInterval / 2;
 
 
@@ -54,6 +54,7 @@ var state = {
 	},
 	"mobStatus" : {
 		"message" : "none",
+		"battery" : 0,
 		"status" : "off",
 		"lastUpdate": "",
 		"connected" : "no",
@@ -86,26 +87,31 @@ function startClientLoop(){
 
 	setInterval(function() {
 
-		//printState();
-
-		var toSend = {
-
-			comStatus : {
-				message : state.comStatus.message,
-				status : state.comStatus.status
-			},
-			mobStatus : {
-				message : state.mobStatus.message,
-				status : state.mobStatus.status
-			}
-		};
-		
-		for(var i = 0; i < panelClients.length; i++){
-			panelClients[i].send(JSON.stringify(toSend));
-		}
-	
+		printState();
+		updateClients();
 
 	}, timeInterval);
+
+}
+
+function updateClients(){
+
+	var toSend = {
+
+		comStatus : {
+			message : state.comStatus.message,
+			status : state.comStatus.status
+		},
+		mobStatus : {
+			message : state.mobStatus.message,
+			status : state.mobStatus.status,
+			battery : state.mobStatus.battery
+		}
+	};
+	
+	for(var i = 0; i < panelClients.length; i++){
+		panelClients[i].send(JSON.stringify(toSend));
+	}		
 
 }
 
@@ -115,27 +121,6 @@ function startClientLoop(){
 wsServer.on('request', function(request){
 
 	//---------Server Functions--------------------//
-
-	function updateClients(){
-
-		var toSend = {
-
-			comStatus : {
-				message : state.comStatus.message,
-				status : state.comStatus.status
-			},
-			mobStatus : {
-				message : state.mobStatus.message,
-				status : state.mobStatus.status
-			}
-		};
-		
-		for(var i = 0; i < panelClients.length; i++){
-			panelClients[i].send(JSON.stringify(toSend));
-		}		
-
-	}
-
 
 	function activateComStatus(){
 
@@ -191,6 +176,16 @@ wsServer.on('request', function(request){
 
 		state.comStatus.status = "off";
 		state.comStatus.connected = "no";
+		state.comStatus.message = "none";
+		state.comStatus.lastUpdate = "";
+	}
+
+	function disconnectMobStatus(){
+		state.mobStatus.status = "off";
+		state.mobStatus.connected = "no";
+		state.mobStatus.message = "none";
+		state.mobStatus.battery = 0;
+		state.mobStatus.lastUpdate = "";
 	}
 
 	function sendConfirmation(type){
@@ -260,7 +255,7 @@ wsServer.on('request', function(request){
 		}
 	}
 
-	function updateMobStatus(action, message){
+	function updateMobStatus(action, message, battery){
 
 		switch(action){
 
@@ -277,6 +272,10 @@ wsServer.on('request', function(request){
 			state.mobStatus.message = message;
 		}
 
+		if(battery && battery !== 0){
+			state.mobStatus.battery = battery;
+		}
+
 	}
 
 	function updateNewClient(index){
@@ -291,7 +290,8 @@ wsServer.on('request', function(request){
 				},
 				mobStatus : {
 					message : state.mobStatus.message,
-					status : state.mobStatus.status
+					status : state.mobStatus.status,
+					battery : state.mobStatus.battery
 				}
 					
 			};
@@ -404,7 +404,7 @@ wsServer.on('request', function(request){
 				break;
 
 			case "mobStatus":
-				updateMobStatus(req.action, req.message);
+				updateMobStatus(req.action, req.message, req.battery);
 				break;
 
 			default:
@@ -430,6 +430,7 @@ wsServer.on('request', function(request){
 		else if(connectionType == "mobStatus"){
 			mobStatusClients.splice(mobIndex, 1);
 			mobStatusAddresses.splice(mobIndex, 1);
+			disconnectMobStatus();
 		}
 		else if(connectionType == "denied"){
 			//do nothing
